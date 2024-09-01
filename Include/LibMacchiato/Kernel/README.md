@@ -1,0 +1,1 @@
+This code originates from the libkernel repository of the Wii U environment organization and has been modified to use the SDL Foundation's conventions. To view the original code, visit this repository: https://github.com/wiiu-env/libkernel
