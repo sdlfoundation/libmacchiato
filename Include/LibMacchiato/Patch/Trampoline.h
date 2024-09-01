@@ -173,16 +173,16 @@ namespace LibMacchiato {
     res repl_##name(__VA_ARGS__)
 
 #define INSTALL_TRAMPOLINE(address, name)                                      \
-    ::Macchiato::TrampolinePatch::create(address, orig_##name,                 \
-                                         reinterpret_cast<void*>(repl_##name))
+    ::LibMacchiato::TrampolinePatch::create(                                   \
+        address, orig_##name, reinterpret_cast<void*>(repl_##name))
 
 #define INSTALL_FUNC_TRAMPOLINE(func, name)                                    \
-    ::Macchiato::TrampolinePatch::create(reinterpret_cast<uintptr_t>(func),    \
-                                         orig_##name,                          \
-                                         reinterpret_cast<void*>(repl_##name))
+    ::LibMacchiato::TrampolinePatch::create(                                   \
+        reinterpret_cast<uintptr_t>(func), orig_##name,                        \
+        reinterpret_cast<void*>(repl_##name))
 
 #define INSTALL_CAFE_TRAMPOLINE(func, name)                                    \
-    ::Macchiato::TrampolinePatch::create(                                      \
+    ::LibMacchiato::TrampolinePatch::create(                                   \
         reinterpret_cast<uintptr_t>(dyn_##func), orig_##name,                  \
         reinterpret_cast<void*>(repl_##name))
 } // namespace LibMacchiato
