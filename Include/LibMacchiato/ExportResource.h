@@ -17,39 +17,36 @@
 #include <vector>
 
 namespace LibMacchiato {
-    constexpr size_t DEFAULT_MODULE_LIMIT    = 100;
-    constexpr size_t DEFAULT_DIRECTORY_LIMIT = 20;
-
     typedef std::function<void()>                 DirectoryButton;
     typedef std::variant<Module, DirectoryButton> DirectoryEntryComponent;
 
-    struct ExportDirectoryEntry {
+    struct DirectoryEntry {
       private:
-        explicit ExportDirectoryEntry(std::string_view        label,
-                                      DirectoryEntryComponent component)
+        explicit DirectoryEntry(std::string_view        label,
+                                DirectoryEntryComponent component)
             : label(label)
             , component(component) {}
 
       public:
-        static ExportDirectoryEntry create(std::string_view        label,
-                                           DirectoryEntryComponent component) {
-            return ExportDirectoryEntry(label, component);
+        static DirectoryEntry create(std::string_view        label,
+                                     DirectoryEntryComponent component) {
+            return DirectoryEntry(label, component);
         }
 
         std::string_view        label;
         DirectoryEntryComponent component;
     };
 
-    struct ExportDirectory {
+    struct Directory {
       private:
-        explicit ExportDirectory(std::string_view                  name,
-                                 std::vector<ExportDirectoryEntry> entries)
+        explicit Directory(std::string_view            name,
+                           std::vector<DirectoryEntry> entries)
             : name(name)
             , entries(entries) {}
 
       public:
-        [[nodiscard]] static ExportDirectory create(std::string_view name) {
-            return ExportDirectory(name, {});
+        [[nodiscard]] static Directory create(std::string_view name) {
+            return Directory(name, {});
         }
 
         // Add a module.
@@ -57,36 +54,36 @@ namespace LibMacchiato {
             LibMacchiato::Module finalMod = mod();
 
             this->entries.push_back(
-                ExportDirectoryEntry::create(finalMod.getName(), finalMod));
+                DirectoryEntry::create(finalMod.getName(), finalMod));
         }
 
         // Add a button.
         inline void btn(std::string                      label,
                         std::function<DirectoryButton()> btn) {
-            this->entries.push_back(ExportDirectoryEntry::create(label, btn()));
+            this->entries.push_back(DirectoryEntry::create(label, btn()));
         }
 
-        std::string_view                  name;
-        std::vector<ExportDirectoryEntry> entries;
+        std::string_view            name;
+        std::vector<DirectoryEntry> entries;
     };
 
     struct ExportDirectoryRoot {
       private:
-        std::vector<ExportDirectory>          directories;
-        std::vector<LibMacchiato::Dependency> dependencies;
-
         explicit ExportDirectoryRoot(
-            std::vector<ExportDirectory>          directories,
+            std::vector<Directory>                directories,
             std::vector<LibMacchiato::Dependency> dependencies)
             : directories(directories)
             , dependencies(dependencies) {}
 
       public:
+        std::vector<Directory>                directories;
+        std::vector<LibMacchiato::Dependency> dependencies;
+
         [[nodiscard]] static ExportDirectoryRoot create() {
             return ExportDirectoryRoot({}, {});
         }
 
-        inline void dir(std::function<ExportDirectory()> dir) {
+        inline void dir(std::function<Directory()> dir) {
             this->directories.push_back(dir());
         }
 
@@ -94,7 +91,9 @@ namespace LibMacchiato {
             this->dependencies.push_back(dep());
         }
     };
-
-#define DIRECTORY(name) [[nodiscard]] ::LibMacchiato::ExportDirectory name()
-#define ROOT(name) [[nodiscard]] ::LibMacchiato::ExportDirectoryRoot name()
 } // namespace LibMacchiato
+
+#define DIRECTORY(name) [[nodiscard]] ::LibMacchiato::Directory name()
+
+#define EXPORT_ROOT(name)                                                      \
+    [[nodiscard]] ::LibMacchiato::ExportDirectoryRoot name()
