@@ -5,7 +5,9 @@
 #include <coreinit/debug.h>
 #include <coreinit/memdefaultheap.h>
 #include <ctime>
+#include <deque>
 #include <filesystem>
+#include <format>
 #include <iomanip>
 #include <iostream>
 #include <list>
@@ -16,29 +18,20 @@
 #include <sys/unistd.h>
 
 namespace LibMacchiato::Log {
-    template <typename... Args>
-    inline std::string formatString(const Args&... args) {
-        std::ostringstream oss;
-        (oss << ... << args);
-        return oss.str();
-    }
+    constexpr size_t MAX_LOG_SIZE = 100;
 
     struct LoggerData {
-      private:
-        size_t recentLogIdx = 0;
-
-      public:
         std::string macchiatoLogPath = "fs:/vol/external01/macchiato/logs";
-        std::optional<std::string>  logFileName = std::nullopt;
-        std::array<std::string, 10> recentLogs  = {};
+        std::optional<std::string> logFileName = std::nullopt;
+        std::deque<std::string>    recentLogs  = {};
 
         inline void addRecentLog(std::string log) {
-            this->recentLogs[this->recentLogIdx] = log;
+            if (this->recentLogs.empty()) {
+                this->recentLogs.resize(MAX_LOG_SIZE, "");
+            }
 
-            if (this->recentLogIdx >= this->recentLogs.size() - 1)
-                this->recentLogIdx = 0;
-            else
-                this->recentLogIdx++;
+            this->recentLogs.pop_front();
+            this->recentLogs.push_back(log);
         }
     };
 
@@ -52,8 +45,7 @@ namespace LibMacchiato::Log {
 #define MLOGINFO_IMPL(severity, show, ...)                                     \
     ::LibMacchiato::Log::LogInfo {                                             \
         std::chrono::high_resolution_clock::now(), __FILE__, __LINE__,         \
-            severity, ::LibMacchiato::Log::formatString(__VA_ARGS__), show,    \
-            u""                                                                \
+            severity, ::std::format(__VA_ARGS__), show, u""                    \
     }
 
 #define MLOGINFO(severity, show, ...) MLOGINFO_IMPL(severity, show, __VA_ARGS__)

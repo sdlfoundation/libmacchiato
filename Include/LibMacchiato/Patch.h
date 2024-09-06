@@ -45,8 +45,8 @@ namespace LibMacchiato {
                 LinePatch::line(address, instruction);
 
             if (!maybeLine.has_value()) {
-                MERROR("Line \"", instruction,
-                       "\" error: ", patchErrorToStr(maybeLine.error()));
+                MERROR("Line \"{}\" error: {}", instruction,
+                       patchErrorToStr(maybeLine.error()));
                 return std::move(*this);
             }
 

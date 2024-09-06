@@ -8,6 +8,7 @@
 #include "LibMacchiato/Utils/Filesystem.h"
 #include "LibMacchiato/Log.h"
 
+#include <cerrno>
 #include <cstdio>
 #include <cstring>
 #include <dirent.h>
@@ -18,6 +19,7 @@
 #include <optional>
 #include <string_view>
 #include <sys/fcntl.h>
+#include <sys/stat.h>
 #include <sys/unistd.h>
 #include <vector>
 
@@ -126,23 +128,46 @@ namespace LibMacchiato::Utils::FS {
 
     std::optional<FILE*> openFile(std::string_view path) {
         FILE* file = fopen(path.data(), "w");
-        if (!file)
+        if (!file) {
+            MERROR("Unable to open file \"{}\"", path);
             return std::nullopt;
+        }
         return file;
     }
 
-    std::optional<std::vector<u8>> readFile(FILE* file, size_t size) {
-        std::vector<u8> buffer = {};
-        buffer.resize(size);
+    std::optional<std::vector<u8>> readFile(std::string_view path) {
+        FILE* file = fopen(std::string(path).c_str(), "rb");
+        if (!file) {
+            MERROR("Unable to open file \"{}\". Error: {}", path,
+                   strerror(errno));
+            return std::nullopt;
+        }
 
-        size_t read = fread(buffer.data(), size, size, file);
+        struct stat fileStat;
+
+        if (fstat(fileno(file), &fileStat) != 0) {
+            MERROR("Error getting file information for file \"{}\". Error: {} ",
+                   path, strerror(errno));
+            fclose(file);
+            return std::nullopt;
+        }
+
+        size_t size = fileStat.st_size;
+
+        std::vector<u8> buffer(size);
+
+        size_t read = fread(buffer.data(), 1, size, file);
 
         if (read != buffer.size()) {
+            MERROR("Error reading file \"{}\". Read bytes: {}, expected: {}",
+                   path, read, size);
             fclose(file);
             return std::nullopt;
         }
 
         if (fclose(file) != 0) {
+            MERROR("Could not close file with path \"{}\". Error: {}", path,
+                   strerror(errno));
             return std::nullopt;
         }
 

@@ -17,6 +17,7 @@ namespace LibMacchiato::Utils::FS {
 
     bool createDirectory(std::string_view path);
 
+    std::optional<FILE*>           openFile(std::string_view path);
     std::optional<std::vector<u8>> readFile(std::string_view path);
     bool writeFile(std::string_view path, std::string_view contents);
 
