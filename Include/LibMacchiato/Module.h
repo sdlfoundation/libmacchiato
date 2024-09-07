@@ -189,7 +189,7 @@ namespace LibMacchiato {
     };
 } // namespace LibMacchiato
 
-#define MODULE(name) [[nodiscard]] ::LibMacchiato::Module name()
+#define MODULE(name) [[nodiscard]] inline ::LibMacchiato::Module name()
 #define DEPENDENCY(name) [[nodiscard]] ::LibMacchiato::Dependency name()
 #define STATE(name)                                                            \
     [[nodiscard]] struct name : public ::LibMacchiato::IDependencyState
