@@ -137,6 +137,14 @@ namespace LibMacchiato {
             return LinePatch::line(address, instruction);
         }
 
+        template <typename Class, typename Return, typename... Args>
+        [[nodiscard]] static std::expected<LinePatch, PatchError>
+        shortBranch(BranchType branchType, uintptr_t address,
+                    Return (Class::*function)(Args...)) {
+            return LinePatch::shortBranch(branchType, address,
+                                          reinterpret_cast<void*>(function));
+        }
+
         [[nodiscard]] uintptr_t getAddress() const noexcept {
             return this->address;
         }
