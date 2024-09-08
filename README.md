@@ -4,6 +4,8 @@
 <b style="inline-block">Click on the icons for links!</b>
 </div>
 
+<br>
+
 > ⚠️ This library is a WIP and only used internally for SDL Foundation projects currently.
 
 # LibMacchiato - Front-end for the Macchiato modding environment
