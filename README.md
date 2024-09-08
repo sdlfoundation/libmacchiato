@@ -4,6 +4,8 @@
 <b style="inline-block">Click on the icons for links!</b>
 </div>
 
+> ⚠️ This library is a WIP and only used internally for SDL Foundation projects currently.
+
 # LibMacchiato - Front-end for the Macchiato modding environment
 
 **What is Macchiato**: Macchiato is an experimental and opinionated modding environment developed by splatoon1enjoyer in the SDL Foundation that provides a standardized module system interface and pipeline for running and patching code of Wii U games via homebrew software and plugins as well as executing callbacks. Its features include:
