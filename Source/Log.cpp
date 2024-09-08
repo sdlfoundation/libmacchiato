@@ -1,3 +1,20 @@
+/*
+ * libmacchiato - Front-end for the Macchiato modding environment
+ * Copyright (C) 2024 splatoon1enjoyer @ SDL Foundation
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, version 3.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 #include "LibMacchiato/Log.h"
 #include "LibMacchiato/Utils/Filesystem.h"
 
@@ -45,38 +62,6 @@ namespace LibMacchiato::Log {
         output << " /" << logMsg.sourceFile << ":"
                << std::to_string(logMsg.lineNum) << ")";
 #endif
-
-        /*
-        if (logMsg.show) {
-            nn::erreula::AppearArg errorArgs;
-
-            errorArgs.errorArg.errorType    = nn::erreula::ErrorType::Message;
-            errorArgs.errorArg.renderTarget = nn::erreula::RenderTarget::Both;
-            errorArgs.errorArg.controllerType =
-                nn::erreula::ControllerType::DrcGamepad;
-            errorArgs.errorArg.button1Label = u"ok";
-            switch (logMsg.severity) {
-            case LogSeverity::Crash:
-                errorArgs.errorArg.errorTitle = u"The application has crashed!";
-                break;
-            case LogSeverity::Error:
-                errorArgs.errorArg.errorTitle = u"An error has occurred!";
-                break;
-            case LogSeverity::Warning:
-                errorArgs.errorArg.errorTitle = u"Warning!";
-                break;
-            case LogSeverity::Info:
-                errorArgs.errorArg.errorTitle = u"Info";
-                break;
-            case LogSeverity::Verbose:
-                errorArgs.errorArg.errorTitle = u"Message";
-                break;
-            }
-
-            errorArgs.errorArg.errorMessage = logMsg.u16message;
-            nn::erreula::AppearErrorViewer(errorArgs);
-        }
-        */
 
         output << std::endl;
 
