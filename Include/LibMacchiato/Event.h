@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Patch/Trampoline.h"
+
 namespace Macchiato {
     struct EventSubscription {
         void* subscriber;
@@ -9,7 +11,7 @@ namespace Macchiato {
     class IEvent {
       public:
         // Bind methods to function trampoline callbacks
-        virtual std::vector<EventSubscription> subscriptions() = 0;
+        virtual std::vector<TrampolinePatch> subscriptions() = 0;
 
         virtual ~Event() = default;
     };

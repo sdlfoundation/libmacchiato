@@ -1,3 +1,20 @@
+/*
+ * libmacchiato - Front-end for the Macchiato modding environment
+ * Copyright (C) 2024 splatoon1enjoyer @ SDL Foundation
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, version 3.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 #pragma once
 
 #include "../Assert.h"
@@ -132,21 +149,9 @@ namespace LibMacchiato {
             trampBytes.insert(trampBytes.end(), jumpBackBytes.begin(),
                               jumpBackBytes.end());
 
-            //
-            // MINFO("size:", std::to_string(hook.getBranchData().size()));
-            // size_t i = 0;
-            // for (const auto byte : trampBytes) {
-            //     MINFO("#", i, ": ", std::to_string(byte));
-            //     i++;
-            // }
-            //
-
             const size_t trampBytesSize = trampBytes.size() * sizeof(u32);
 
             void* mem = reinterpret_cast<void*>(new u8[trampBytesSize]);
-            // void* mem = MEMAllocFromExpHeapEx(gJumpHeapHandle,
-            // trampBytesSize,
-            //                                   sizeof(u32));
             if (!mem) {
                 MFATAL("Failed to allocate memory for trampoline patch.");
             }
@@ -171,6 +176,11 @@ namespace LibMacchiato {
 #define TRAMPOLINE(name, res, ...)                                             \
     res (*orig_##name)(__VA_ARGS__) __attribute__((section(".data")));         \
     res repl_##name(__VA_ARGS__)
+
+#define STATIC_TRAMPOLINE(name, res, ...)                                      \
+    inline static res (*orig_##name)(__VA_ARGS__)                              \
+        __attribute__((section(".data"))) = nullptr;                           \
+    static res repl_##name(__VA_ARGS__)
 
 #define INSTALL_TRAMPOLINE(address, name)                                      \
     ::LibMacchiato::TrampolinePatch::create(                                   \
