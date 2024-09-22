@@ -10,7 +10,7 @@
 
 # LibMacchiato - Front-end for the Macchiato modding environment
 
-**What is Macchiato**: Macchiato is an experimental and opinionated modding environment developed by splatoon1enjoyer in the SDL Foundation that provides a standardized module system interface and pipeline for running and patching code of Wii U games via homebrew software and plugins as well as executing callbacks. Its features include:
+**What is Macchiato**: Macchiato is an experimental and opinionated modding environment developed by splatoon1enjoyer in the SDL Foundation that provides a standardized module system interface and pipeline for running and patching code of Wii U games via homebrew software and plugins as well as executing callbacks.
 
 **What is LibMacchiato**: LibMacchiato is the front-end of the environment and a patching framework that provides all of the actual module and patch interfaces used to patch Wii U applications. Additionally, it includes utilities for your everyday needs for parsing ELF files, managing files, searching for executables and more. It can either be used with the Macchiato back-end, which handles the application of patches, creating menus for toggling modules, GUI rendering and more, or standalone for your own patching needs. Features of LibMacchiato include:
 
