@@ -2,7 +2,7 @@
 
 #include "Patch/Trampoline.h"
 
-namespace Macchiato {
+namespace LibMacchiato {
     struct EventSubscription {
         void* subscriber;
         u32   function;
@@ -13,6 +13,6 @@ namespace Macchiato {
         // Bind methods to function trampoline callbacks
         virtual std::vector<TrampolinePatch> subscriptions() = 0;
 
-        virtual ~Event() = default;
+        virtual ~IEvent() = default;
     };
-} // namespace Macchiato
+} // namespace LibMacchiato

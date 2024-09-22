@@ -63,6 +63,13 @@ namespace LibMacchiato::Utils::Memory {
 #endif
     }
 
+    inline void invalidateDCache(uintptr_t address, size_t bytes) {
+#ifndef MACCHIATO_TARGET_EMU
+        DCInvalidateRange((void*)address, bytes);
+#else
+#endif
+    }
+
     inline void writeInstruction(u32 address, u32 bytes) {
 #ifndef MACCHIATO_TARGET_EMU
         ::LibMacchiato::Utils::Kernel::copyData(
@@ -83,6 +90,20 @@ namespace LibMacchiato::Utils::Memory {
 
         return bytes;
     }
+
+    template <typename Data> inline Data read(auto address) {
+        Data data;
+
+#ifndef MACCHIATO_TARGET_EMU
+        ::LibMacchiato::Utils::Kernel::copyData(
+            OSEffectiveToPhysical((u32)&data),
+            OSEffectiveToPhysical(reinterpret_cast<u32>(address)),
+            sizeof(Data));
+#endif
+
+        return data;
+    }
+
 
     inline std::pair<u16, u16> splitAddress(uintptr_t addr) {
         auto upper = static_cast<u16>((addr >> 16) & 0xFFFF);

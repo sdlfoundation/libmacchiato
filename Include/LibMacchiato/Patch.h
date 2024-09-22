@@ -1,8 +1,26 @@
+/*
+ * libmacchiato - Front-end for the Macchiato modding environment
+ * Copyright (C) 2024 splatoon1enjoyer @ SDL Foundation
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, version 3.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 #pragma once
 
 #include "Assembler.h"
 
 #include "Patch/AssemblyHook.h"
+#include "Patch/Data.h"
 #include "Patch/Detour.h"
 #include "Patch/Error.h"
 #include "Patch/Hook.h"
@@ -18,8 +36,10 @@
 #include <vector>
 
 namespace LibMacchiato {
-    typedef std::variant<LinePatch, TrampolinePatch, DetourPatch, Hook,
-                         AssemblyHook>
+    typedef std::variant<DataPatch<u32>, DataPatch<u16>, DataPatch<u8>,
+                         DataPatch<s32>, DataPatch<s16>, DataPatch<s8>,
+                         DataPatch<f32>, LinePatch, TrampolinePatch,
+                         DetourPatch, Hook, AssemblyHook>
         PatchComponent;
 
     struct Patch {
@@ -51,6 +71,13 @@ namespace LibMacchiato {
             }
 
             this->components.push_back(maybeLine.value());
+            return std::move(*this);
+        }
+
+        template <typename T>
+        [[nodiscard]] inline Patch&& withData(uintptr_t address,
+                                              T         data) && noexcept {
+            this->components.push_back(DataPatch<T>::create(address, data));
             return std::move(*this);
         }
 
