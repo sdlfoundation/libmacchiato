@@ -20,6 +20,7 @@
 #include "Assembler.h"
 
 #include "Patch/AssemblyHook.h"
+#include "Patch/Data.h"
 #include "Patch/Detour.h"
 #include "Patch/Error.h"
 #include "Patch/Hook.h"
@@ -35,8 +36,10 @@
 #include <vector>
 
 namespace LibMacchiato {
-    typedef std::variant<LinePatch, TrampolinePatch, DetourPatch, Hook,
-                         AssemblyHook>
+    typedef std::variant<DataPatch<u32>, DataPatch<u16>, DataPatch<u8>,
+                         DataPatch<s32>, DataPatch<s16>, DataPatch<s8>,
+                         DataPatch<f32>, LinePatch, TrampolinePatch,
+                         DetourPatch, Hook, AssemblyHook>
         PatchComponent;
 
     struct Patch {
@@ -68,6 +71,13 @@ namespace LibMacchiato {
             }
 
             this->components.push_back(maybeLine.value());
+            return std::move(*this);
+        }
+
+        template <typename T>
+        [[nodiscard]] inline Patch&& withData(uintptr_t address,
+                                              T         data) && noexcept {
+            this->components.push_back(DataPatch<T>::create(address, data));
             return std::move(*this);
         }
 

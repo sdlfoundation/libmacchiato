@@ -149,21 +149,9 @@ namespace LibMacchiato {
             trampBytes.insert(trampBytes.end(), jumpBackBytes.begin(),
                               jumpBackBytes.end());
 
-            //
-            // MINFO("size:", std::to_string(hook.getBranchData().size()));
-            // size_t i = 0;
-            // for (const auto byte : trampBytes) {
-            //     MINFO("#", i, ": ", std::to_string(byte));
-            //     i++;
-            // }
-            //
-
             const size_t trampBytesSize = trampBytes.size() * sizeof(u32);
 
             void* mem = reinterpret_cast<void*>(new u8[trampBytesSize]);
-            // void* mem = MEMAllocFromExpHeapEx(gJumpHeapHandle,
-            // trampBytesSize,
-            //                                   sizeof(u32));
             if (!mem) {
                 MFATAL("Failed to allocate memory for trampoline patch.");
             }
@@ -188,6 +176,11 @@ namespace LibMacchiato {
 #define TRAMPOLINE(name, res, ...)                                             \
     res (*orig_##name)(__VA_ARGS__) __attribute__((section(".data")));         \
     res repl_##name(__VA_ARGS__)
+
+#define STATIC_TRAMPOLINE(name, res, ...)                                      \
+    inline static res (*orig_##name)(__VA_ARGS__)                              \
+        __attribute__((section(".data"))) = nullptr;                           \
+    static res repl_##name(__VA_ARGS__)
 
 #define INSTALL_TRAMPOLINE(address, name)                                      \
     ::LibMacchiato::TrampolinePatch::create(                                   \

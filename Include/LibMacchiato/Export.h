@@ -3,6 +3,7 @@
 #include "ExportResource.h"
 #include "Version.h"
 
+#include <functional>
 #include <string_view>
 
 namespace LibMacchiato {
