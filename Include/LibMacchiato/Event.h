@@ -10,6 +10,7 @@ namespace LibMacchiato {
 
     class IEvent {
       public:
+        // Bind methods to function trampoline callbacks
         virtual std::vector<TrampolinePatch> subscriptions() = 0;
 
         virtual ~IEvent() = default;
