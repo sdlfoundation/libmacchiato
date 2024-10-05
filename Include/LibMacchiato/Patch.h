@@ -29,7 +29,9 @@
 
 #include <cstdint>
 #include <expected>
+#include <functional>
 #include <memory>
+#include <ranges>
 #include <string>
 #include <typeindex>
 #include <variant>
@@ -146,6 +148,12 @@ namespace LibMacchiato {
             return std::move(*this);
         }
 
+        [[nodiscard]] inline Patch&&
+        withComponent(const PatchComponent component) && noexcept {
+            this->components.push_back(component);
+            return std::move(*this);
+        }
+
         inline void enable() {
             if (this->enabled) [[unlikely]]
                 return;
@@ -167,8 +175,32 @@ namespace LibMacchiato {
 
             this->enabled = false;
         }
+
+        Patch operator+(Patch other) {
+            Patch result = Patch::create();
+
+            for (const auto& [c1, c2] : std::views::zip(
+                     this->getComponents(), other.getComponents())) {
+                result = std::move(result).withComponent(c1).withComponent(c2);
+            }
+
+            return result;
+        }
     };
 
-#define PATCH(name) [[nodiscard]] ::LibMacchiato::Patch name()
-#define DECL_PATCH(name) [[nodiscard]] ::LibMacchiato::Patch name();
+    inline Patch operator+(std::function<Patch()> lhs,
+                           std::function<Patch()> rhs) {
+        Patch result = Patch::create();
+
+        for (const auto& [c1, c2] :
+             std::views::zip(lhs().getComponents(), rhs().getComponents())) {
+            result = std::move(result).withComponent(c1).withComponent(c2);
+        }
+
+        return result;
+    }
+
+#define PATCH(name) [[nodiscard]] inline ::LibMacchiato::Patch name()
+#define DECL_PATCH(name) [[nodiscard]] ::LibMacchiato::Patch name()
+#define DEF_PATCH(name) [[nodiscard]] ::LibMacchiato::Patch name();
 } // namespace LibMacchiato

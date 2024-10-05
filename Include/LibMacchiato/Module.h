@@ -155,7 +155,10 @@ namespace LibMacchiato {
     class IDependencyState {
       public:
         virtual void onEnable() {}
+
         virtual void onUpdate(CallbackData data) {}
+        virtual void onDraw(CallbackData data) {}
+
         virtual void onDisable() {}
 
         virtual std::optional<Dropdown> dropdown() { return std::nullopt; }

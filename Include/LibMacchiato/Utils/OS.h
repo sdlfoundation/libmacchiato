@@ -2,6 +2,8 @@
 
 #include <coreinit/dynload.h>
 
+#include <sdl-utils/Types.h>
+
 namespace LibMacchiato::Utils {
     inline std::optional<OSDynLoad_NotifyData>
     getRplByName(std::string_view name) {
