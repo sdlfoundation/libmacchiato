@@ -30,5 +30,9 @@ if (NOT TARGET sdl-utils)
     add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/Dependencies/sdl-utils)
 endif()
 
+# if (NOT TARGET libkernel)
+#     add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/Dependencies/libkernel)
+# endif()
+
 #target_link_libraries(libmacchiato wups libnotifications glm::glm sdl-utils imgui CURL::libcurl cpr)
 target_link_libraries(libmacchiato PRIVATE sdl-utils)

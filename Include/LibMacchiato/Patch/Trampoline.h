@@ -75,16 +75,21 @@ namespace LibMacchiato {
     struct TrampolinePatch {
       private:
         TrampolinePatch(uintptr_t origFunctionAddress, void* origFunction,
-                        const void* replFunction, Hook hook)
+                        size_t origFunctionSize, const void* replFunction,
+                        Hook hook)
             : origFunctionAddress(origFunctionAddress)
             , origFunction(origFunction)
+            , origFunctionSize(origFunctionSize)
             , replFunction(replFunction)
             , hook(hook) {}
 
-        uintptr_t   origFunctionAddress;
-        void*       origFunction;
+        uintptr_t origFunctionAddress;
+        void*     origFunction;
+        size_t    origFunctionSize;
+
         const void* replFunction;
-        Hook        hook;
+
+        Hook hook;
 
       public:
         inline void enable() { this->hook.enable(); }
@@ -167,10 +172,18 @@ namespace LibMacchiato {
             origFunction =
                 reinterpret_cast<Return (*)(Args...)>(std::move(mem));
 
-            return TrampolinePatch(address,
-                                   reinterpret_cast<void*>(origFunction),
-                                   replFunction, std::move(hook));
+            return TrampolinePatch(
+                address, reinterpret_cast<void*>(origFunction), trampBytesSize,
+                replFunction, std::move(hook));
         }
+
+        // ~TrampolinePatch() {
+        //     this->disable();
+
+        //     if (this->origFunction) {
+        //         delete[] reinterpret_cast<u8*>(this->origFunction);
+        //     }
+        // }
     };
 
 #define TRAMPOLINE(name, res, ...)                                             \

@@ -13,12 +13,16 @@ namespace LibMacchiato::Utils::FS {
     constexpr std::string_view MACCHIATO_BASE_PATH =
         "fs:/vol/external01/macchiato";
 
+    // constexpr std::string_view MACCHIATO_BASE_PATH = "~/macchiato";
+
     bool fileExists(std::string_view filePath);
 
     bool createDirectory(std::string_view path);
 
-    std::optional<FILE*>           openFile(std::string_view path);
+    std::optional<FILE*>           openFile(std::string_view path,
+                                            std::string_view flags = "w");
     std::optional<std::vector<u8>> readFile(std::string_view path);
+    std::optional<bool>            createFile(std::string_view path);
     bool writeFile(std::string_view path, std::string_view contents);
 
     std::optional<std::string> getSerialId();

@@ -67,5 +67,11 @@ namespace LibMacchiato {
         getBranchData() const noexcept {
             return this->branch;
         }
+
+        // ~Hook() {
+        //     for (auto& patch : this->branch) {
+        //         patch.disable();
+        //     }
+        // }
     }; // namespace LibMacchiato
 } // namespace LibMacchiato

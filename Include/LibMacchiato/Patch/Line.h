@@ -172,5 +172,7 @@ namespace LibMacchiato {
                        : reinterpret_cast<uintptr_t>(Utils::Memory::readU32(
                            reinterpret_cast<u32>(this->address)));
         }
+
+        // ~LinePatch() { this->disable(); }
     };
 } // namespace LibMacchiato

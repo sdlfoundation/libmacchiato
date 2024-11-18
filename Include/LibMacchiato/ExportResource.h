@@ -75,9 +75,8 @@ namespace LibMacchiato {
         }
 
         // Add a button.
-        inline void btn(std::string                      label,
-                        std::function<DirectoryButton()> btn) {
-            this->entries.push_back(DirectoryEntry::create(label, btn()));
+        inline void btn(std::string_view label, DirectoryButton btn) {
+            this->entries.push_back(DirectoryEntry::create(label, btn));
         }
 
         std::string_view            name;

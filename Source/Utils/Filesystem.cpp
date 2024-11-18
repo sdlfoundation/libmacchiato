@@ -136,8 +136,9 @@ namespace LibMacchiato::Utils::FS {
         return std::nullopt;
     }
 
-    std::optional<FILE*> openFile(std::string_view path) {
-        FILE* file = fopen(path.data(), "w");
+    std::optional<FILE*> openFile(std::string_view path,
+                                  std::string_view flags) {
+        FILE* file = fopen(path.data(), flags.data());
         if (!file) {
             MERROR("Unable to open file \"{}\"", path);
             return std::nullopt;
@@ -182,6 +183,25 @@ namespace LibMacchiato::Utils::FS {
         }
 
         return buffer;
+    }
+
+    std::optional<bool> createFile(std::string_view path) {
+        FILE* file = fopen(std::string(path).c_str(), "wb");
+        if (!file) {
+            MERROR("Unable to create file \"{}\". Error: {}", path,
+                   strerror(errno));
+            return std::nullopt;
+        }
+
+        // No data to write, so we simply create the file and close it.
+
+        if (fclose(file) != 0) {
+            MERROR("Could not close file with path \"{}\". Error: {}", path,
+                   strerror(errno));
+            return std::nullopt;
+        }
+
+        return true;
     }
 
     bool writeFile(FILE* file, std::string_view contents) {

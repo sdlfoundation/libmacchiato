@@ -328,8 +328,8 @@ namespace LibMacchiato::PPCAssembler {
         const std::string formattedInstruction = format(instructionStr);
 
 #ifndef MACCHIATO_NO_ASSEMBLY_MEMO
-        if (assemblyMemo.contains(formattedInstruction))
-            return assemblyMemo[formattedInstruction];
+        // if (assemblyMemo.contains(formattedInstruction))
+        //     return assemblyMemo[formattedInstruction];
 #endif
 
         const std::expected<PPCInstruction, AssembleError> instruction =
@@ -350,7 +350,7 @@ namespace LibMacchiato::PPCAssembler {
         }
 
 #ifndef MACCHIATO_NO_ASSEMBLY_MEMO
-        assemblyMemo[formattedInstruction] = code.value();
+        // assemblyMemo[formattedInstruction] = code.value();
 #endif
 
         return code;

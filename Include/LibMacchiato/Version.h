@@ -101,5 +101,21 @@ namespace LibMacchiato {
 
             return triplet;
         }
+
+        bool operator>(const VersionTriplet& other) {
+            if (this->major > other.major) {
+                return true;
+            } else if (this->major < other.major) {
+                return false;
+            }
+
+            if (this->minor > other.minor) {
+                return true;
+            } else if (this->minor < other.minor) {
+                return false;
+            }
+
+            return this->patch > other.patch;
+        }
     };
 } // namespace LibMacchiato

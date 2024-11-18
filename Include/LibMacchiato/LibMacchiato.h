@@ -19,6 +19,7 @@
 
 #include "Export.h"
 #include "ExportResource.h"
+#include "Input.h"
 #include "Log.h"
 #include "Module.h"
 #include "Patch.h"

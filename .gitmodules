@@ -1,3 +1,6 @@
 [submodule "Dependencies/sdl-utils"]
 	path = Dependencies/sdl-utils
 	url = https://github.com/sdlfoundation/sdl-utils
+[submodule "Dependencies/libkernel"]
+	path = Dependencies/libkernel
+	url = https://github.com/wiiu-env/libkernel

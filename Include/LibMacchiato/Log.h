@@ -146,25 +146,4 @@ namespace LibMacchiato::Log {
     };
 
     void log(LogInfo logMsg);
-
-    /*
-    inline void init() {
-        static FSClient fsClient = {};
-        if (FSAddClient(&fsClient, FS_ERROR_FLAG_NONE) != FS_STATUS_OK) {
-            MCRASH("Failed to add FSClient");
-        }
-
-        // Create erreula
-        nn::erreula::CreateArg createArg;
-        createArg.region   = nn::erreula::RegionType::Europe;
-        createArg.language = nn::erreula::LangType::English;
-        createArg.workMemory =
-            MEMAllocFromDefaultHeap(nn::erreula::GetWorkMemorySize());
-        createArg.fsClient = &fsClient;
-
-        if (!nn::erreula::Create(createArg)) {
-            MCRASH("Unable to create erreula instance");
-        }
-    }
-    */
 } // namespace LibMacchiato::Log
