@@ -24,6 +24,8 @@
 #include "../Utils/Bind.h"
 #include "../Utils/Kernel.h"
 
+#include "../Compatibility/Cemu.h"
+
 #include "Hook.h"
 #include "Line.h"
 
@@ -99,6 +101,8 @@ namespace LibMacchiato {
         [[nodiscard]] static TrampolinePatch
         create(uintptr_t   address, Return (*&origFunction)(Args...),
                const void* replFunction) {
+            Compatibility::updateAddressIfCemu(address);
+
             // If the function starts with a jump, that probably means that the
             // function has already been hooked. In that case, recursively
             // update the address to point to the previous trampoline.
@@ -111,21 +115,14 @@ namespace LibMacchiato {
             std::vector<u32> trampBytes = {};
 
             for (const auto& patch : hook.getBranchData()) {
-                const u32  assembly       = patch.getDisableAssembly();
-                const u32  opcode         = assembly & 0xFC000003;
-                const bool opcodeIsBranch = opcode == 0x48000000;
+                const u32 assembly = patch.getDisableAssembly();
 
-                if (!opcodeIsBranch) {
+                if (!Utils::Assembly::isBranch(assembly)) {
                     trampBytes.push_back(assembly);
                     continue;
                 }
 
-                u32 jumpOffset = assembly & 0x01FFFFFC;
-
-                // Sign extension check
-                if ((jumpOffset & 0x02000000) != jumpOffset) {
-                    jumpOffset += 0xFE000000;
-                }
+                auto jumpOffset = Utils::Assembly::get_branch_offset(assembly);
 
                 const u32 absoluteJumpAddress =
                     jumpOffset + static_cast<u32>(patch.getAddress());
@@ -187,12 +184,11 @@ namespace LibMacchiato {
     };
 
 #define TRAMPOLINE(name, res, ...)                                             \
-    res (*orig_##name)(__VA_ARGS__) __attribute__((section(".data")));         \
+    res (*orig_##name)(__VA_ARGS__);                                           \
     res repl_##name(__VA_ARGS__)
 
 #define STATIC_TRAMPOLINE(name, res, ...)                                      \
-    inline static res (*orig_##name)(__VA_ARGS__)                              \
-        __attribute__((section(".data"))) = nullptr;                           \
+    inline static res (*orig_##name)(__VA_ARGS__) = nullptr;                   \
     static res repl_##name(__VA_ARGS__)
 
 #define INSTALL_TRAMPOLINE(address, name)                                      \

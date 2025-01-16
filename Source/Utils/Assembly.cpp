@@ -43,7 +43,7 @@ namespace LibMacchiato::Utils::Assembly {
         } else {
             // bool jumpOffsetIsNegative = (jumpOffset & 0x02000000) ==
             // 0x02000000;
-            bool jumpOffsetIsNegative = (jumpOffset & 0x02000000) != jumpOffset;
+            bool jumpOffsetIsNegative = (jumpOffset & 0x02000000) != 0;
 
             if (jumpOffsetIsNegative) {
                 jumpOffset += 0xFE000000;

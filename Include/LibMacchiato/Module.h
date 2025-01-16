@@ -242,7 +242,6 @@ namespace LibMacchiato {
 
         Patch patch;
 
-        // std::vector<std::shared_ptr<LibMacchiato::IEvent>> events;
         std::vector<LibMacchiato::TrampolinePatch> events;
 
         bool isCheat;

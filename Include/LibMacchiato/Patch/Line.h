@@ -18,6 +18,7 @@
 #pragma once
 
 #include "../Assembler.h"
+#include "../Compatibility/Cemu.h"
 #include "../Log.h"
 #include "../Utils/Memory.h"
 #include "Error.h"
@@ -106,11 +107,15 @@ namespace LibMacchiato {
 
         [[nodiscard]] static LinePatch create(uintptr_t address,
                                               uintptr_t enableAssembly) {
+            Compatibility::updateAddressIfCemu(address);
+
             return LinePatch(address, enableAssembly, std::nullopt);
         }
 
         [[nodiscard]] static std::expected<LinePatch, PatchError>
         line(uintptr_t address, const std::string instruction) {
+            Compatibility::updateAddressIfCemu(address);
+
             std::expected<u32, PPCAssembler::AssembleError> assembledCode =
                 PPCAssembler::assemble(instruction);
 
@@ -122,8 +127,10 @@ namespace LibMacchiato {
         }
 
         [[nodiscard]] static std::expected<std::vector<LinePatch>, PatchError>
-        multiline(const uintptr_t                address,
+        multiline(uintptr_t                      address,
                   const std::vector<std::string> instructions) {
+            Compatibility::updateAddressIfCemu(address);
+
             std::vector<LinePatch> lines;
 
             size_t i = 0;
@@ -144,6 +151,8 @@ namespace LibMacchiato {
 
         [[nodiscard]] static std::expected<LinePatch, PatchError>
         shortBranch(BranchType branchType, uintptr_t address, void* function) {
+            Compatibility::updateAddressIfCemu(address);
+
             auto      functionAddress = reinterpret_cast<uintptr_t>(function);
             uintptr_t relativeAddress = functionAddress - address;
 
@@ -158,6 +167,8 @@ namespace LibMacchiato {
         [[nodiscard]] static std::expected<LinePatch, PatchError>
         shortBranch(BranchType branchType, uintptr_t address,
                     Return (Class::*function)(Args...)) {
+            Compatibility::updateAddressIfCemu(address);
+
             return LinePatch::shortBranch(branchType, address,
                                           reinterpret_cast<void*>(function));
         }

@@ -18,6 +18,7 @@
 #pragma once
 
 #include "../Assembler/Mask.h"
+#include "../Compatibility/Cemu.h"
 #include "../Utils/Assembly.h"
 #include "../Utils/Memory.h"
 #include "Line.h"
@@ -53,6 +54,8 @@ namespace LibMacchiato {
 
         [[nodiscard]] static Hook create(uintptr_t   address,
                                          const void* function) {
+            Compatibility::updateAddressIfCemu(address);
+
             // Utils::Assembly::adjustAddressIfFirstInstructionIsBranch(address);
 
             auto customFunctionAddress = reinterpret_cast<uintptr_t>(function);
