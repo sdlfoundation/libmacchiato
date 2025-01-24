@@ -100,7 +100,7 @@ namespace LibMacchiato {
         template <typename Return, typename... Args>
         [[nodiscard]] static TrampolinePatch
         create(uintptr_t   address, Return (*&origFunction)(Args...),
-               const void* replFunction) {
+               const void* replFunction, bool isLibFunction = false) {
             Compatibility::updateAddressIfCemu(address);
 
             // If the function starts with a jump, that probably means that the
